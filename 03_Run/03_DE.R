@@ -20,6 +20,6 @@ source("/Users/cassandrahui/Documents/Projects/Scripts/scRNAseq/functions/analyz
 
 table(dat$orig.ident)
 res <- analyze_subset(dat, "orig.ident", "tree.ident", "2")
-head(res$comparisons$Control.Region_vs_Obstruction.Region)
+head(res$comparisons)
 
 
