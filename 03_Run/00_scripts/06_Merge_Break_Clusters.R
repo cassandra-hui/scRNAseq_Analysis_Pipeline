@@ -6,7 +6,7 @@
 library(Seurat)
 
 
-source('functions.R')
+source("/Users/cassandrahui/Documents/Projects/Scripts/scRNAseq/functions/functions.R")
 
 ###################
 # Set for functions to work

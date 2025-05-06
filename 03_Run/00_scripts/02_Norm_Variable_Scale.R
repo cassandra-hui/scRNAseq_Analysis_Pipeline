@@ -5,6 +5,8 @@
 
 library(Seurat)
 
+source("/Users/cassandrahui/Documents/Projects/Scripts/scRNAseq/functions/functions.R")
+
 ###################
 # Set for functions to work
 #setwd("~/Documents/Projects/")

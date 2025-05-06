@@ -7,7 +7,7 @@ library(dplyr)
 library(kableExtra)
 library(ggplot2)
 
-source('functions.R')
+source("/Users/cassandrahui/Documents/Projects/Scripts/scRNAseq/functions/functions.R")
 
 
 ###################

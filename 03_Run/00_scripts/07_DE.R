@@ -12,7 +12,14 @@ library(SeuratObject)
 library(dplyr)
 library(ggplot2)
 
+source("/Users/cassandrahui/Documents/Projects/Scripts/scRNAseq/functions/functions.R")
 source("/Users/cassandrahui/Documents/Projects/Scripts/scRNAseq/functions/analyze_subset.R")
+
+###################
+# Set for functions to work
+#setwd("~/Documents/Projects/")
+fig_path <- "../05_figures/"
+###################
 
 #dat <- readRDS("Seurat_CellType.rds")
 dat <- readRDS("Seurat_Merge.rds")
