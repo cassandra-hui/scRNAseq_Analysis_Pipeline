@@ -48,3 +48,5 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 03_Run/.DS_Store
+03_Run/.DS_Store
+.DS_Store
