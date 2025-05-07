@@ -19,8 +19,8 @@ fig_path <- "../05_figures/"
 ###################
 
 
-#dat <- readRDS("02_objects/Seurat_DR.rds")
-dat <- readRDS("02_objects/Seurat_Intergrated.rds")
+dat <- readRDS("02_objects/Seurat_DR.rds")
+#dat <- readRDS("02_objects/Seurat_Intergrated.rds")
 
 
 ###################################
@@ -66,7 +66,7 @@ SaveFigure(plot, "06_CellCylce_UMAP", width = 5, height = 5)
 # Find Markers (This takes a while)
 
 dat_markers <- FindAllMarkers(dat, min.pct = 0.25, logfc.threshold = 0.25)
-saveRDS(dat_markers, "02_objects/markers")
+saveRDS(dat_markers, "02_objects/markers.rds")
 
 # Heatmap
 top20 <- dat_markers %>% group_by(cluster) %>% top_n(20, avg_log2FC)
@@ -147,7 +147,7 @@ plot <- DimPlot(dat, group.by = "cell_type", label = TRUE) + NoLegend()
 plot
 SaveFigure(plot, "09_CellType_UMAP", width = 5, height = 5)
 
-saveRDS(dat, "Seurat_CellType.rds")
+saveRDS(dat, "02_objects/Seurat_CellType.rds")
 
 ##############################
 ## Automated Identification ##
@@ -184,17 +184,22 @@ other <- names(t)[t < 10]
 singleR_labels[singleR_labels %in% other] <- "none"
 
 ## Add to object
-dat$SingleR_annot <- singleR_labels
+dat$CellType <- singleR_labels
 
 
-dittoSeq::dittoDimPlot(dat, "SingleR_annot", size = 0.7)
-dittoSeq::dittoBarPlot(dat, var = "SingleR_annot", group.by = "orig.ident")
+dittoSeq::dittoDimPlot(dat, "CellType", size = 0.7)
+dittoSeq::dittoBarPlot(dat, var = "CellType", group.by = "orig.ident")
 
 dittoSeq::dittoBarPlot(dat, 
-                       var = "SingleR_annot", 
+                       var = "CellType", 
                        group.by = "SCT_snn_res.0.1")
 
-saveRDS(dat, "Seurat_CellType.rds")
+plot <- DimPlot(dat, alpha = 0.8, group.by = "CellType", label=T)
+plot
+SaveFigure(plot, "09_umap_CellType", width = 8, height = 6)
+
+
+saveRDS(dat, "02_objects/Seurat_CellType.rds")
 
 
 # Options 2: scMRMA
@@ -256,4 +261,4 @@ a+b
 SaveFigure(a + b, "10_umap_Cluster_CellType", width = 14, height = 6)
 
 
-saveRDS(dat, "Seurat_CellType.rds")
+saveRDS(dat, "02_objects/Seurat_CellType.rds")

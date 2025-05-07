@@ -1,0 +1,160 @@
+---
+title: "Single-cell RNA-seq Analysis Report"
+author: "Nevada Bioinformatics Center"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    code_folding: hide
+params:
+  normalization_method: "SCTransform" # Options: "SCTransform", "LogNormalize"
+  integration_method: "CCA" # Options: "CCA", "RPCA", "None"
+  cell_annotation: "Manual" # Options: "Manual", "SingleR", "scMRMA"
+  run_de_analysis: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(Seurat)
+library(dplyr)
+library(ggplot2)
+
+# Load helper functions
+source("../functions/functions.R")
+source("../functions/analyze_subset.R")
+```
+
+# PI: | Project Title:
+
+Cells were sequenced using the 10X Genomics platform. The data was processed using the Cell Ranger pipeline.
+
+## 1. **Data Loading**: 
+Raw data from the 10X Genomics output was loaded into R using the Seurat package. The data was filtered to remove cells expresing less than 100 reads.
+
+```{r}
+
+dat <- readRDS("02_objects/01_seurat_obj_before_QC.rds")
+
+Seurat::FeatureScatter(dat, 
+                       feature1 = "nCount_RNA", 
+                       feature2 = "nFeature_RNA")
+
+
+
+
+```
+
+
+
+## 2. **Quality Control**: 
+Filter cells based on quality metrics:
+ 
+ - Cells with fewer than 40 genes are likely empty droplets or low-quality cells.
+ - Cells with more than 7000 genes may represent doublets or multiplets.
+ - Cells identified as doublets from the scDblFinder package were removed.
+ - Cells with mitochondrial gene content above 25%, often indicating stressed or dying cells.
+
+```{r}
+dat <- readRDS("02_objects/Seurat_QC.rds")
+
+RidgePlot(dat, features=c("nFeature_RNA","nCount_RNA", "percent.mt"), ncol = 2)
+
+# Number of cells
+print(paste0("Number of cells: ", table(dat$orig.ident)))
+```
+
+
+## 3. **Normalization**: 
+
+Data was normalized using SCTransform. 
+
+## 4. **Dimensionality Reduction**: 
+
+PCA was performed, 25 PCs were used for creating a UMAP.
+
+
+
+```{r}
+dat <- readRDS("02_objects/Seurat_DR.rds")
+
+# PCA
+
+ElbowPlot(dat,ndims = 50)
+DimPlot(object = dat, reduction = "pca", group.by = "orig.ident")
+
+```
+
+## 5. **Clustering**: 
+
+Cells were clustered using the Louvain algorithm, and UMAP dimension reduction.
+
+## (Optional) 5.B. **Integration**:
+
+Data was integrated using the CCA method and PCA and UMAP dimnalitiy reduction redone.  
+
+
+```{r}
+
+# UMAP
+
+DimPlot(dat, alpha = 0.8, reduction = "umap")
+DimPlot(dat, group.by="orig.ident", alpha = 0.8, reduction = "umap")
+
+```
+
+
+
+
+
+### **Markers**: 
+
+Gene markers for each cluster were identified.
+ 
+```{r}
+dat <- readRDS("02_objects/Seurat_DR.rds")
+dat_markers <- readRDS("02_objects/markers.rds")
+
+# Heatmap
+top20 <- dat_markers %>% group_by(cluster) %>% slice_max(order_by = avg_log2FC, n = 20)
+DoHeatmap(
+  object = dat,
+  features = top20$gene)
+
+
+top5 <- dat_markers %>% group_by(cluster) %>% slice_max(order_by = avg_log2FC, n = 5)
+to_plot <- unique(top5$gene)
+DotPlot(dat, features = to_plot, group.by = "SCT_snn_res.0.1") + coord_flip()
+
+```
+ 
+
+```{r}
+dat <- readRDS("02_objects/Seurat_CellType.rds")
+
+# Cell Phase
+DimPlot(dat, alpha = 0.8, group.by = "Phase")
+
+```
+
+## 6. **Cell Type Annotation**: 
+
+Cells were annotated using the scMRMA package, which provides tools for automated cell type annotation in single-cell RNA-seq data. For more details, visit the [scMRMA documentation](https://academic.oup.com/nar/article/50/2/e7/6396893).
+
+```{r}
+DimPlot(dat, alpha = 0.8, group.by = "CellType", label=T)
+```
+
+## 7. **Differential Expression Analysis**: 
+
+DE analysis was performed using the FindMarkers function in Seurat.
+
+```{r}
+results <- readRDS("02_objects/results.rds")
+
+head(results$comparisons[[1]], 30)
+```
+
+
+

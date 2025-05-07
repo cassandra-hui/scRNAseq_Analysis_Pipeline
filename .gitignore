@@ -50,3 +50,5 @@ rsconnect/
 03_Run/.DS_Store
 03_Run/.DS_Store
 .DS_Store
+/01_data
+*.rds

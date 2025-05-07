@@ -50,7 +50,7 @@ abline(v = 40, col = "red", lwd = 2)
 
 # Using 40
 
-# Create a scatter plot with horizontal line at y = 7500
+# Create a scatter plot with horizontal line at y = 7000
 Seurat::FeatureScatter(dat, feature1 = "nCount_RNA", feature2 = "nFeature_RNA") +
   geom_hline(yintercept = 7000, color = "red", linetype = "dashed")
 

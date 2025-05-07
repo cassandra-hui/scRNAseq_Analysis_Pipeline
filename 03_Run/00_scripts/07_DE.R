@@ -21,8 +21,8 @@ source("/Users/cassandrahui/Documents/Projects/Scripts/scRNAseq/functions/analyz
 fig_path <- "../05_figures/"
 ###################
 
-#dat <- readRDS("Seurat_CellType.rds")
-dat <- readRDS("Seurat_Merge.rds")
+#dat <- readRDS("02_objects/Seurat_CellType.rds")
+dat <- readRDS("02_objects/Seurat_Merge.rds")
 
 
 
@@ -47,6 +47,9 @@ results <- analyze_subset(dat,
 
 # Visualize
 head(results$comparisons[[1]])
+
+# Save
+saveRDS(results, "02_objects/results.rds")
 
 # Save single comparison
 comparison_name <- names(results$comparisons)[1]  # Get the name of first comparison

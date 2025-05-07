@@ -65,5 +65,5 @@ plot
 SaveFigure(plot, "10_clust1_broken", width = 14, height = 12)
 
 
-saveRDS(dat, "Seurat_Merge.rds")
+saveRDS(dat, "02_objects/Seurat_Merge.rds")
 

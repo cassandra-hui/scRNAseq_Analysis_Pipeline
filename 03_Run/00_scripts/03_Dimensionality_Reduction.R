@@ -49,6 +49,8 @@ plot <- DimPlot(dat, reduction = "tsne")
 plot
 
 
+############# Find Clusters
+
 dat <- FindNeighbors(dat, dims = use.pcs)
 
 dat <- FindClusters(dat, resolution = seq(0.1, 0.8, by=0.1))

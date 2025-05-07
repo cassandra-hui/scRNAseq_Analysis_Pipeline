@@ -19,16 +19,15 @@ dat <- readRDS("02_objects/Seurat_QC.rds")
 # This is supposed to work better for scRNA data, 
 # but can use the regular Normalize and Scale script instead
 
-# Rename the assay from "originalexp" to "RNA"
+# Rename the assay from "originalexp" to "RNA" if it exists
 DefaultAssay(dat)
-dat[["RNA"]] <- dat[["originalexp"]]
-Assays(dat)
-DefaultAssay(dat) <- "RNA"
-dat[["originalexp"]] <- NULL  # Remove the old assay
+# dat[["RNA"]] <- dat[["originalexp"]]
+# Assays(dat)
+# DefaultAssay(dat) <- "RNA"
+# dat[["originalexp"]] <- NULL  # Remove the old assay
 
 # Now check the assay name
 Assays(dat)  # Should be "RNA"
-
 
 # May error if data is too large. 
 dat <- SCTransform(dat)
